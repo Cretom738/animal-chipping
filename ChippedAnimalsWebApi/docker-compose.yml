@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  database:
+    image: postgres:latest
+    container_name: "postgres"
+    volumes:
+      - chipped_animals_db:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=ChippedAnimals
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=5Yv6wSpytEKVU9Xbqj9j2&F$
+      
+  webapi:
+    image: webapi
+    container_name: "webapi"
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/var/log/webapi/
+    depends_on:
+      - database
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Production
+
+  tests: 
+    image: mrexpen/planet_olymp_phase2
+    container_name: "tests"
+    pull_policy: always
+    ports:
+      - "8090:8080"
+    depends_on:
+      - webapi
+    environment:
+      SERVER_URL: http://webapi:8080
+      STAGE: all
+
+volumes:
+  chipped_animals_db:
