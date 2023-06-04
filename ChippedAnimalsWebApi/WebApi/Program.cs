@@ -9,6 +9,8 @@ using System.Reflection;
 using FluentValidation.AspNetCore;
 using Destructurama;
 using Services.Extensions;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +33,7 @@ builder.Services.AddServices();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(AddSwaggerBasicAuthentication);
 
 var app = builder.Build();
 
@@ -111,4 +113,29 @@ static void AddMiddleware(WebApplicationBuilder builder)
 {
     builder.Services.AddExceptionHandlingMiddleware();
     builder.Services.AddHttpContextLoggingMiddleware();
+}
+
+static void AddSwaggerBasicAuthentication(SwaggerGenOptions options)
+{
+    options.AddSecurityDefinition("Basic", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Basic",
+        In = ParameterLocation.Header
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Basic",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new string[0]
+        }
+    });
 }

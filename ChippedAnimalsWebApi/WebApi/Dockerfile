@@ -6,6 +6,7 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["WebApi/WebApi.csproj", "WebApi/"]
+COPY ["Services/Services.csproj", "Services/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["Core/Core.csproj", "Core/"]
 RUN dotnet restore "WebApi/WebApi.csproj"

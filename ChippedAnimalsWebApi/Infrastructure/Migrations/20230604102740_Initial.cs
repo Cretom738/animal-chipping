@@ -14,6 +14,19 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AccountRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Role = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AnimalGenders",
                 columns: table => new
                 {
@@ -37,19 +50,6 @@ namespace Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AnimalLifeStatuses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AnimalRoles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Role = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnimalRoles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,9 +108,9 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Accounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Accounts_AnimalRoles_RoleId",
+                        name: "FK_Accounts_AccountRoles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AnimalRoles",
+                        principalTable: "AccountRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -233,6 +233,16 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AccountRoles",
+                columns: new[] { "Id", "Role" },
+                values: new object[,]
+                {
+                    { 1, "ADMIN" },
+                    { 2, "CHIPPER" },
+                    { 3, "USER" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AnimalGenders",
                 columns: new[] { "Id", "Gender" },
                 values: new object[,]
@@ -252,16 +262,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AnimalRoles",
-                columns: new[] { "Id", "Role" },
-                values: new object[,]
-                {
-                    { 1, "ADMIN" },
-                    { 2, "CHIPPER" },
-                    { 3, "USER" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Accounts",
                 columns: new[] { "Id", "Email", "FirstName", "LastName", "Password", "RoleId" },
                 values: new object[,]
@@ -270,6 +270,12 @@ namespace Infrastructure.Migrations
                     { 2, "chipper@simbirsoft.com", "chipperFirstName", "chipperLastName", "qwerty123", 2 },
                     { 3, "user@simbirsoft.com", "userFirstName", "userLastName", "qwerty123", 3 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountRoles_Role",
+                table: "AccountRoles",
+                column: "Role",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_Email",
@@ -297,12 +303,6 @@ namespace Infrastructure.Migrations
                 name: "IX_AnimalLifeStatuses_LifeStatus",
                 table: "AnimalLifeStatuses",
                 column: "LifeStatus",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AnimalRoles_Role",
-                table: "AnimalRoles",
-                column: "Role",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -393,7 +393,7 @@ namespace Infrastructure.Migrations
                 name: "Locations");
 
             migrationBuilder.DropTable(
-                name: "AnimalRoles");
+                name: "AccountRoles");
         }
     }
 }

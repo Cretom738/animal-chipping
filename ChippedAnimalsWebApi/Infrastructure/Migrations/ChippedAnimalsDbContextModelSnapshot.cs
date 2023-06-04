@@ -124,7 +124,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("Role")
                         .IsUnique();
 
-                    b.ToTable("AnimalRoles");
+                    b.ToTable("AccountRoles");
 
                     b.HasData(
                         new

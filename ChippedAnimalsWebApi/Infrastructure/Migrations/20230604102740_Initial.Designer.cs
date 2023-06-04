@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ChippedAnimalsDbContext))]
-    [Migration("20230418110744_Initial")]
+    [Migration("20230604102740_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -127,7 +127,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("Role")
                         .IsUnique();
 
-                    b.ToTable("AnimalRoles");
+                    b.ToTable("AccountRoles");
 
                     b.HasData(
                         new
